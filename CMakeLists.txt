@@ -12,8 +12,8 @@ add_executable(aoc2025
 #        04.cpp
 #        05.cpp
 #        06_1.cpp
-       06_2.cpp
-#        07.cpp
+#        06_2.cpp
+       07.cpp
 #        08.cpp
 #        09.cpp
 #        10.cpp

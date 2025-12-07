@@ -10,6 +10,7 @@
 #include <sstream>
 #include <tuple>
 #include <vector>
+#include <deque>
 
 #ifdef NDEBUG
 #undef NDEBUG

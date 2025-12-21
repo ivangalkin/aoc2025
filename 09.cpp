@@ -181,61 +181,6 @@ int main9() {
   ll result0 = 0;
   ll result1 = 0;
 
-  ll min_x = std::numeric_limits<ll>::max();
-  ll max_x = std::numeric_limits<ll>::min();
-  ll min_y = std::numeric_limits<ll>::max();
-  ll max_y = std::numeric_limits<ll>::min();
-
-  for (ll i = 0; i < input.size(); i++) {
-    auto [x1, y1] = input.at(i);
-    min_x = std::min(min_x, x1);
-    max_x = std::max(max_x, x1);
-
-    min_y = std::min(min_y, y1);
-    max_y = std::max(max_y, y1);
-  }
-
-  myprint(min_x);
-  myprint(max_x);
-  myprint(min_y);
-  myprint(max_y);
-
-  ll width = max_x + 1;
-  ll height = max_y + 1;
-
-  char *array = (char *)malloc(width * height * sizeof(char));
-  memset(array, '.', width * height * sizeof(char));
-
-  auto INDEX = [width](ll x, ll y) { return y * width + x; };
-
-  for (ll i = 0; i < input.size(); i++) {
-    ll idx_from = i;
-    ll idx_to = (i + 1) % input.size();
-
-    auto [x_from, y_from] = input.at(idx_from);
-    auto [x_to, y_to] = input.at(idx_to);
-
-    assert((x_from == x_to) || (y_from == y_to));
-
-    if (x_from == x_to) {
-      ll start = std::min(y_from, y_to);
-      ll finish = std::max(y_from, y_to);
-      for (ll y = start; y <= finish; y++) {
-        array[INDEX(x_from, y)] = 'X';
-      }
-      continue;
-    }
-
-    if (y_from == y_to) {
-      ll start = std::min(x_from, x_to);
-      ll finish = std::max(x_from, x_to);
-      for (ll x = start; x <= finish; x++) {
-        array[INDEX(x, y_from)] = 'X';
-      }
-      continue;
-    }
-  }
-
   auto nothing_inside = [=](ll a, ll b) {
     auto [a_x, a_y] = input.at(a);
     auto [b_x, b_y] = input.at(b);
@@ -244,6 +189,7 @@ int main9() {
     ll y_min = std::min(a_y, b_y);
     ll y_max = std::max(a_y, b_y);
 
+    // check vertex
     for (ll i = 0; i < input.size(); i++) {
       if (i == a || i == b) {
         continue;
@@ -255,11 +201,32 @@ int main9() {
       }
     }
 
-    for (ll i = x_min + 1; i < x_max; i++) {
-      for (ll j = y_min + 1; j < y_max; j++) {
-        auto index = INDEX(i, j);
-        if (array[index] != '.') {
-          return false;
+    for (ll i = 0; i < input.size(); i++) {
+      ll idx_from = i;
+      ll idx_to = (i + 1) % input.size();
+
+      auto [x_from, y_from] = input.at(idx_from);
+      auto [x_to, y_to] = input.at(idx_to);
+
+      assert((x_from == x_to) || (y_from == y_to));
+
+      if (x_from == x_to) {
+        ll start = std::min(y_from, y_to);
+        ll finish = std::max(y_from, y_to);
+        for (ll y = start; y <= finish; y++) {
+          // check painted dot
+          if (x_min < x_from && x_from < x_max && y_min < y && y < y_max) {
+            return false;
+          }
+        }
+      } else if (y_from == y_to) {
+        ll start = std::min(x_from, x_to);
+        ll finish = std::max(x_from, x_to);
+        for (ll x = start; x <= finish; x++) {
+          // check painted dot
+          if (x_min < x && x < x_max && y_min < y_from && y_from < y_max) {
+            return false;
+          }
         }
       }
     }
